@@ -2,7 +2,7 @@
 <html lang="pt">
 <head>
   <meta charset="UTF-8">
-  <title>Imagens de Satélite - Europa</title>
+  <title>Imagens de Satélite - Europa & Atlântico</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -11,9 +11,7 @@
       margin: 0;
       padding: 20px;
     }
-    h1 {
-      margin-bottom: 10px;
-    }
+    h1 { margin-bottom: 10px; }
     select {
       padding: 6px;
       font-size: 1em;
@@ -34,16 +32,18 @@
   </style>
 </head>
 <body>
-  <h1>Imagens de Satélite - Europa</h1>
+  <h1>Imagens de Satélite - EUMETSAT</h1>
 
-  <label for="source">Fonte:</label>
+  <label for="source">Canal:</label>
   <select id="source">
-    <option value="metno">MET Norway (Visível)</option>
-    <option value="eumetsat">EUMETSAT WMS (VIS006)</option>
+    <option value="rgb">RGB Natural (Europa, visível)</option>
+    <option value="ir">Infravermelho 10.8 µm (Atlântico)</option>
+    <option value="wv_atl">Vapor de Água 6.2 µm (Atlântico)</option>
+    <option value="wv_eu">Vapor de Água 6.2 µm (Europa)</option>
   </select>
 
   <div id="timestamp">A carregar...</div>
-  <img id="satellite" alt="Imagem de Satélite" crossorigin="anonymous">
+  <img id="satellite" alt="Imagem de Satélite">
 
   <script>
     const img = document.getElementById("satellite");
@@ -51,47 +51,31 @@
     const sourceSelect = document.getElementById("source");
 
     function getUrl(source) {
-      const now = new Date();
-
-      if (source === "metno") {
-        // MET Norway - imagem visível mais recente
-        return "https://api.met.no/weatherapi/geosatellite/1.4/?area=europe&type=visible&size=normal&nocache=" + now.getTime();
-      } else {
-        // EUMETSAT WMS - sem parâmetro "time" para usar última disponível
-        const baseUrl = "https://view.eumetsat.int/geoserver/wms?";
-        const params = new URLSearchParams({
-          service: "WMS",
-          version: "1.1.1",
-          request: "GetMap",
-          layers: "meteosat:msg_vis006", // camada VIS006 (visível)
-          styles: "",
-          format: "image/png",
-          srs: "EPSG:4326",
-          bbox: "-30,25,20,55", // Oeste-Europa (inclui Portugal)
-          width: "800",
-          height: "600"
-        });
-        return baseUrl + params.toString() + "&nocache=" + now.getTime();
+      const now = new Date().getTime(); // anti-cache
+      switch(source) {
+        case "rgb":
+          return "https://eumetview.eumetsat.int/static-images/latestImages/EUMETSAT_MSG_RGBNatColourEurope.jpg?nocache=" + now;
+        case "ir":
+          return "https://eumetview.eumetsat.int/static-images/latestImages/EUMETSAT_MSG_IR108EAtlantic.jpg?nocache=" + now;
+        case "wv_atl":
+          return "https://eumetview.eumetsat.int/static-images/latestImages/EUMETSAT_MSG_WV062EAtlantic.jpg?nocache=" + now;
+        case "wv_eu":
+          return "https://eumetview.eumetsat.int/static-images/latestImages/EUMETSAT_MSG_WV062EEurope.jpg?nocache=" + now;
       }
     }
 
     function updateImage() {
       const source = sourceSelect.value;
-      const url = getUrl(source);
-      img.src = url;
+      img.src = getUrl(source);
       const now = new Date();
       timestamp.textContent = "Última atualização: " + now.toLocaleString("pt-PT") +
-        " | Fonte: " + sourceSelect.options[sourceSelect.selectedIndex].text;
+        " | Canal: " + sourceSelect.options[sourceSelect.selectedIndex].text;
     }
 
-    // Atualiza quando muda a fonte
     sourceSelect.addEventListener("change", updateImage);
 
-    // Atualiza ao carregar
-    updateImage();
-
-    // Atualiza automaticamente a cada 10 minutos
-    setInterval(updateImage, 600000);
+    updateImage(); // ao carregar
+    setInterval(updateImage, 600000); // 10 minutos
   </script>
 </body>
 </html>
