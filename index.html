@@ -2,7 +2,7 @@
 <html lang="pt">
 <head>
   <meta charset="UTF-8">
-  <title>Visualizador de Satélite - EUMETSAT</title>
+  <title>Dashboard Satélite - EUMETSAT</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -14,9 +14,26 @@
     h1 {
       margin-bottom: 10px;
     }
+    .buttons {
+      margin-bottom: 15px;
+    }
+    .buttons button {
+      padding: 8px 16px;
+      margin: 5px;
+      font-size: 1em;
+      border: none;
+      border-radius: 5px;
+      background-color: #0077cc;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    .buttons button:hover {
+      background-color: #005fa3;
+    }
     iframe {
       width: 100%;
-      height: 80vh; /* ocupa a maior parte da altura da janela */
+      height: 70vh;
       border: 2px solid #333;
       border-radius: 10px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.2);
@@ -32,14 +49,43 @@
   </style>
 </head>
 <body>
-  <h1>Visualizador de Satélite - EUMETSAT</h1>
+  <h1>Dashboard Satélite - EUMETSAT</h1>
 
-  <!-- iFrame do visualizador EUMETView -->
-  <iframe src="https://view.eumetsat.int/" title="EUMETView"></iframe>
+  <div class="buttons">
+    <button onclick="openChannel('rgb')">RGB Natural (Europa)</button>
+    <button onclick="openChannel('ir')">IR 10.8 µm (Atlântico)</button>
+    <button onclick="openChannel('wv_atl')">WV 6.2 µm (Atlântico)</button>
+    <button onclick="openChannel('wv_eu')">WV 6.2 µm (Europa)</button>
+  </div>
+
+  <!-- iFrame principal -->
+  <iframe id="satIframe" src="https://view.eumetsat.int/" title="EUMETView"></iframe>
 
   <p>
     Fonte das imagens: 
     <a href="https://view.eumetsat.int/" target="_blank">EUMETView - EUMETSAT</a>
   </p>
+
+  <script>
+    // Ao clicar nos botões, abre o canal em nova aba do EUMETView oficial
+    function openChannel(channel) {
+      let url;
+      switch(channel) {
+        case 'rgb':
+          url = 'https://view.eumetsat.int/?product=EUMETSAT_MSG_RGBNatColourEurope';
+          break;
+        case 'ir':
+          url = 'https://view.eumetsat.int/?product=EUMETSAT_MSG_IR108EAtlantic';
+          break;
+        case 'wv_atl':
+          url = 'https://view.eumetsat.int/?product=EUMETSAT_MSG_WV062EAtlantic';
+          break;
+        case 'wv_eu':
+          url = 'https://view.eumetsat.int/?product=EUMETSAT_MSG_WV062EEurope';
+          break;
+      }
+      window.open(url, '_blank'); // abre em nova aba
+    }
+  </script>
 </body>
 </html>
