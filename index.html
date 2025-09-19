@@ -2,7 +2,7 @@
 <html lang="pt">
 <head>
   <meta charset="UTF-8">
-  <title>Imagens de Satélite - Europa & Atlântico</title>
+  <title>Visualizador de Satélite - EUMETSAT</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -11,71 +11,35 @@
       margin: 0;
       padding: 20px;
     }
-    h1 { margin-bottom: 10px; }
-    select {
-      padding: 6px;
-      font-size: 1em;
-      margin-bottom: 15px;
+    h1 {
+      margin-bottom: 10px;
     }
-    #timestamp {
-      font-size: 0.9em;
-      color: #555;
-      margin-bottom: 20px;
-    }
-    img {
-      max-width: 95%;
-      height: auto;
+    iframe {
+      width: 100%;
+      height: 80vh; /* ocupa a maior parte da altura da janela */
       border: 2px solid #333;
       border-radius: 10px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
+    p {
+      margin-top: 10px;
+      font-size: 0.9em;
+      color: #555;
+    }
+    a {
+      color: #0077cc;
+    }
   </style>
 </head>
 <body>
-  <h1>Imagens de Satélite - EUMETSAT</h1>
+  <h1>Visualizador de Satélite - EUMETSAT</h1>
 
-  <label for="source">Canal:</label>
-  <select id="source">
-    <option value="rgb">RGB Natural (Europa, visível)</option>
-    <option value="ir">Infravermelho 10.8 µm (Atlântico)</option>
-    <option value="wv_atl">Vapor de Água 6.2 µm (Atlântico)</option>
-    <option value="wv_eu">Vapor de Água 6.2 µm (Europa)</option>
-  </select>
+  <!-- iFrame do visualizador EUMETView -->
+  <iframe src="https://view.eumetsat.int/" title="EUMETView"></iframe>
 
-  <div id="timestamp">A carregar...</div>
-  <img id="satellite" alt="Imagem de Satélite">
-
-  <script>
-    const img = document.getElementById("satellite");
-    const timestamp = document.getElementById("timestamp");
-    const sourceSelect = document.getElementById("source");
-
-    function getUrl(source) {
-      const now = new Date().getTime(); // anti-cache
-      switch(source) {
-        case "rgb":
-          return "https://eumetview.eumetsat.int/static-images/latestImages/EUMETSAT_MSG_RGBNatColourEurope.jpg?nocache=" + now;
-        case "ir":
-          return "https://eumetview.eumetsat.int/static-images/latestImages/EUMETSAT_MSG_IR108EAtlantic.jpg?nocache=" + now;
-        case "wv_atl":
-          return "https://eumetview.eumetsat.int/static-images/latestImages/EUMETSAT_MSG_WV062EAtlantic.jpg?nocache=" + now;
-        case "wv_eu":
-          return "https://eumetview.eumetsat.int/static-images/latestImages/EUMETSAT_MSG_WV062EEurope.jpg?nocache=" + now;
-      }
-    }
-
-    function updateImage() {
-      const source = sourceSelect.value;
-      img.src = getUrl(source);
-      const now = new Date();
-      timestamp.textContent = "Última atualização: " + now.toLocaleString("pt-PT") +
-        " | Canal: " + sourceSelect.options[sourceSelect.selectedIndex].text;
-    }
-
-    sourceSelect.addEventListener("change", updateImage);
-
-    updateImage(); // ao carregar
-    setInterval(updateImage, 600000); // 10 minutos
-  </script>
+  <p>
+    Fonte das imagens: 
+    <a href="https://view.eumetsat.int/" target="_blank">EUMETView - EUMETSAT</a>
+  </p>
 </body>
 </html>
