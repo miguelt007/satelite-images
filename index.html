@@ -2,7 +2,7 @@
 <html lang="pt">
 <head>
   <meta charset="UTF-8">
-  <title>Dashboard Satélite - EUMETSAT</title>
+  <title>Visualizador de Satélite - EUMETSAT</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -11,91 +11,35 @@
       margin: 0;
       padding: 20px;
     }
-    h1 { margin-bottom: 10px; }
-    .buttons {
-      margin-bottom: 15px;
+    h1 {
+      margin-bottom: 10px;
     }
-    .buttons button {
-      padding: 8px 16px;
-      margin: 5px;
-      font-size: 1em;
-      border: none;
-      border-radius: 5px;
-      background-color: #0077cc;
-      color: white;
-      cursor: pointer;
-      transition: background-color 0.2s;
-    }
-    .buttons button:hover {
-      background-color: #005fa3;
-    }
-    #satImage {
-      max-width: 95%;
-      height: auto;
+    iframe {
+      width: 100%;
+      height: 80vh; /* ocupa a maior parte da altura da janela */
       border: 2px solid #333;
       border-radius: 10px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    }
-    #timestamp {
-      font-size: 0.9em;
-      color: #555;
-      margin-top: 10px;
     }
     p {
       margin-top: 10px;
       font-size: 0.9em;
       color: #555;
     }
-    a { color: #0077cc; }
+    a {
+      color: #0077cc;
+    }
   </style>
 </head>
 <body>
-  <h1>Dashboard Satélite - EUMETSAT</h1>
+  <h1>Visualizador de Satélite - EUMETSAT</h1>
 
-  <div class="buttons">
-    <button onclick="setChannel('rgb')">RGB Natural (Europa)</button>
-    <button onclick="setChannel('ir')">IR 10.8 µm (Atlântico)</button>
-    <button onclick="setChannel('wv_atl')">WV 6.2 µm (Atlântico)</button>
-    <button onclick="setChannel('wv_eu')">WV 6.2 µm (Europa)</button>
-  </div>
+  <!-- iFrame do visualizador EUMETView -->
+  <iframe src="https://view.eumetsat.int/" title="EUMETView"></iframe>
 
-  <img id="satImage" alt="Imagem de Satélite">
-  <div id="timestamp">A carregar...</div>
-
-  <p>Fonte das imagens: <a href="https://view.eumetsat.int/" target="_blank">EUMETView - EUMETSAT</a></p>
-
-  <script>
-    const satImage = document.getElementById('satImage');
-    const timestamp = document.getElementById('timestamp');
-
-    let currentChannel = 'rgb';
-
-    // URLs diretas das imagens EUMETSAT
-    const channels = {
-      'rgb': 'https://eumetview.eumetsat.int/static-images/latestImages/EUMETSAT_MSG_RGBNatColourEurope.jpg',
-      'ir': 'https://eumetview.eumetsat.int/static-images/latestImages/EUMETSAT_MSG_IR108EAtlantic.jpg',
-      'wv_atl': 'https://eumetview.eumetsat.int/static-images/latestImages/EUMETSAT_MSG_WV062EAtlantic.jpg',
-      'wv_eu': 'https://eumetview.eumetsat.int/static-images/latestImages/EUMETSAT_MSG_WV062EEurope.jpg'
-    };
-
-    function setChannel(channel) {
-      currentChannel = channel;
-      updateImage();
-    }
-
-    function updateImage() {
-      const now = new Date().getTime(); // anti-cache
-      satImage.src = channels[currentChannel] + '?nocache=' + now;
-      const dt = new Date();
-      timestamp.textContent = "Última atualização: " + dt.toLocaleString("pt-PT") + 
-                              " | Canal: " + currentChannel.toUpperCase();
-    }
-
-    // Atualiza automaticamente a cada 10 minutos
-    setInterval(updateImage, 600000);
-
-    // Atualiza ao carregar a página
-    updateImage();
-  </script>
+  <p>
+    Fonte das imagens: 
+    <a href="https://view.eumetsat.int/" target="_blank">EUMETView - EUMETSAT</a>
+  </p>
 </body>
 </html>
