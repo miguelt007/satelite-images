@@ -43,7 +43,7 @@
   </select>
 
   <div id="timestamp">A carregar...</div>
-  <img id="satellite" alt="Imagem de Satélite">
+  <img id="satellite" alt="Imagem de Satélite" crossorigin="anonymous">
 
   <script>
     const img = document.getElementById("satellite");
@@ -54,21 +54,22 @@
       const now = new Date();
 
       if (source === "metno") {
+        // MET Norway - imagem visível mais recente
         return "https://api.met.no/weatherapi/geosatellite/1.4/?area=europe&type=visible&size=normal&nocache=" + now.getTime();
       } else {
+        // EUMETSAT WMS - sem parâmetro "time" para usar última disponível
         const baseUrl = "https://view.eumetsat.int/geoserver/wms?";
         const params = new URLSearchParams({
           service: "WMS",
           version: "1.1.1",
           request: "GetMap",
-          layers: "meteosat:msg_vis006", // camada VIS006
+          layers: "meteosat:msg_vis006", // camada VIS006 (visível)
           styles: "",
           format: "image/png",
           srs: "EPSG:4326",
-          bbox: "-30,25,20,55", // Oeste-Europa (inclui PT)
+          bbox: "-30,25,20,55", // Oeste-Europa (inclui Portugal)
           width: "800",
-          height: "600",
-          time: now.toISOString()
+          height: "600"
         });
         return baseUrl + params.toString() + "&nocache=" + now.getTime();
       }
@@ -79,10 +80,11 @@
       const url = getUrl(source);
       img.src = url;
       const now = new Date();
-      timestamp.textContent = "Última atualização: " + now.toLocaleString("pt-PT") + " | Fonte: " + sourceSelect.options[sourceSelect.selectedIndex].text;
+      timestamp.textContent = "Última atualização: " + now.toLocaleString("pt-PT") +
+        " | Fonte: " + sourceSelect.options[sourceSelect.selectedIndex].text;
     }
 
-    // Atualiza quando se muda de fonte
+    // Atualiza quando muda a fonte
     sourceSelect.addEventListener("change", updateImage);
 
     // Atualiza ao carregar
